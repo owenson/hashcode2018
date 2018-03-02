@@ -56,11 +56,14 @@ class Car:
         #    print("car is idle but tried to move")
         if self.state == "MOVETOSTART":
             if self.isAt(self.ride.a, self.ride.b):
-                if self.ride.s < simStep:
-                    self.state = "IDLE"
+                if self.ride.s > simStep:
+                    self.state = "WAITTOSTART"
                     return
                 self.state = "MOVETODEST"
             self.moveToward(self.ride.a, self.ride.b)
+
+        if self.state == "WAITTOSTART" and self.ride.s <= simStep:
+            self.state = "MOVETODEST"
 
         if self.state == "MOVETODEST":
             if self.isAt(self.ride.x, self.ride.y):
@@ -141,12 +144,12 @@ for simStep in range(steps):
     for car in cars:
         #print car
         if car.state == "IDLE" and len(rides)>0:
-            #i = findClosestRideIdx(car, simStep)
-            i = whichNextRide(car, simStep)
+            i = findClosestRideIdx(car, simStep)
+            #i = whichNextRide(car, simStep)
 
             if i!=-1:
-                idx = getRideIdxWidthId(i)
-                ride = rides.pop(idx)
+                #idx = getRideIdxWidthId(i)
+                ride = rides.pop(i)
                 car.setRide(ride)
         car.move(simStep)
 
